@@ -1,0 +1,253 @@
+{{ header }}{{ column_left }}
+<div id="content">
+
+<script src="https://unpkg.com/sweetalert2@7.18.0/dist/sweetalert2.all.js"></script>
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+<script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<style>
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 47px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+{# .khalti ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #e7e7e7;
+    background-color: #f3f3f3;
+}
+
+.khalti li {
+    float: left;
+}
+
+.khalti li a {
+    display: block;
+    color: #666;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.khalti li a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+.khalti li a.active {
+    color: white;
+    background-color: #4CAF50;
+} #}
+</style>
+
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-payment" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+      </div>
+      <h1>{{ heading_title }}</h1>
+	  <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+	{% if error_warning %}
+	  <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+	    <button type="button" class="close" data-dismiss="alert">&times;</button>
+	  </div>
+	{% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+
+                <h3>Khalti</h3>
+          <div class="gateway-banner updated">
+            <img src="view/image/payment/khalti-logo.png" style="width:200px"/>
+            <p class="main"><strong>Getting Started</strong></p>
+            <p>Khalti is the new generation Payment Gateway, Digital Wallet and API provider for various services. We provide you with true Payment Gateway, where you can accepts payments from<br><b>For Queries, feel free to call us at 9801165568 or email merchantapi@khalti.com</b></p>
+          <!--new tabs-->
+          <ul class="khalti">
+            <li><a class="tablinks" onclick="openTabs(event, 'Status');" href="{{current}}#" id="defaultTab">Status</a></li>
+            <li><a class="tablinks" onclick="openTabs(event, 'Transactions');" href="{{current}}#">Transactions</a></li>
+            <li><a class="tablinks" onclick="openTabs(event, 'FAQ');" href="{{current}}#">FAQ</a></li>
+          </ul>
+
+          <div id="Status" class="tabcontent">
+<div class="content">
+  <p class="main"><strong>Status</strong></p>
+<form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-payment" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-test"><span data-toggle="tooltip" title="{{ help_testmode }}">{{ entry_test }}</span></label>
+            <div class="col-sm-10">
+              <select name="payment_khalti_test" id="input-test" class="form-control">
+				{% if payment_khalti_test %}
+				  <option value="1" selected="selected">{{ text_yes }}</option>
+				  <option value="0">{{ text_no }}</option>
+				{% else %}
+				  <option value="1">{{ text_yes }}</option>
+				  <option value="0" selected="selected">{{ text_no }}</option>
+				{% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-username"><span data-toggle="tooltip" title="{{ help_username }}">{{ entry_live_public_key }}</span></label>
+            <div class="col-sm-10">
+              <input type="text" name="payment_khalti_live_public_key" value="{{ payment_khalti_live_public_key }}" placeholder="{{ entry_live_public_key }}" id="input-username" class="form-control"/>
+			  {% if error_live_public_key %}
+			    <div class="text-danger">{{ error_live_public_key }}</div>
+			  {% endif %}
+            </div>
+          </div>
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-password"><span data-toggle="tooltip" title="{{ help_password }}">{{ entry_live_secret_key }}</span></label>
+            <div class="col-sm-10">
+              <input type="text" name="payment_khalti_live_secret_key" value="{{ payment_khalti_live_secret_key }}" placeholder="{{ entry_live_secret_key }}" id="input-password" class="form-control"/>
+			  {% if error_live_secret_key %}
+			    <div class="text-danger">{{ error_live_secret_key }}</div>
+			  {% endif %}
+            </div>
+          </div>
+            <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-username"><span data-toggle="tooltip" title="{{ help_username }}">{{ entry_test_public_key }}</span></label>
+            <div class="col-sm-10">
+              <input type="text" name="payment_khalti_test_public_key" value="{{ payment_khalti_test_public_key }}" placeholder="{{ entry_test_public_key }}" id="input-username" class="form-control"/>
+			  {% if error_test_public_key %}
+			    <div class="text-danger">{{ error_test_public_key }}</div>
+			  {% endif %}
+            </div>
+          </div>
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-password"><span data-toggle="tooltip" title="{{ help_password }}">{{ entry_test_secret_key }}</span></label>
+            <div class="col-sm-10">
+              <input type="text" name="payment_khalti_test_secret_key" value="{{ payment_khalti_test_secret_key }}" placeholder="{{ entry_test_secret_key }}" id="input-password" class="form-control"/>
+			  {% if error_test_secret_key %}
+			    <div class="text-danger">{{ error_test_secret_key }}</div>
+			  {% endif %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="payment_khalti_status" id="input-status" class="form-control">
+				{% if payment_khalti_status %}
+				  <option value="1" selected="selected">{{ text_enabled }}</option>
+				  <option value="0">{{ text_disabled }}</option>
+				{% else %}
+				  <option value="1">{{ text_enabled }}</option>
+				  <option value="0" selected="selected">{{ text_disabled }}</option>
+				{% endif %}
+              </select>
+            </div>
+          </div>
+        </form>
+  </p>
+  </div>
+</div>
+
+<div id="Transactions" class="tabcontent">
+<div class="content">
+            <table class="table table-bordered table-hover" id="transaction_tbl" style="margin-top:20px">
+            <thead>
+            <tr>
+              <th>Source</th>
+              <th>Amount(Rs)</th>
+              <th>Fee(Rs)</th>
+              <th>Date</th>
+              <th>Type</th>
+              <th>State</th>
+              <th>#</th>
+          </tr>
+          </thead>
+          <tbody>
+            {% for transaction in transactions %}
+            <tr>
+            <td>{{ transaction.source }}</td>
+            <td>{{ transaction.amount }}</td>
+            <td>{{ transaction.fee }}</td>
+            <td>{{ transaction.date }}</td>
+            <td>{{ transaction.type }}</td>
+            <td>{{ transaction.state }}</td>
+            <td><a href="{{ transaction.link }}" class="btn btn-primary">View</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+          </table>
+        </div> 
+</div>
+
+<div id="FAQ" class="tabcontent">
+  <h3>FAQ</h3>
+  <ul type="circle">
+    <li><p><strong>I forgot my password. How do I reset it ?</strong><br>Please visit khalti.com/recover to reset your password</p>
+    <li><p><strong>How do I change my password?</strong><br>You can change your password from your account setting page. Click on "Change Password"</p>
+    <li><p><strong>Why do you need my Citizenship, Drivers License or Passport?</strong><br>As per the policy for financial transactions, we need to verify your identity.</p>
+  </ul>
+</div>
+ <!--new tabs end-->
+</div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    jQuery(document).ready( function () {
+    jQuery('#transaction_tbl').DataTable();
+} );
+</script>
+
+<script>
+document.getElementById("defaultTab").click();
+function openTabs(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+</script>
+{{ footer }}
