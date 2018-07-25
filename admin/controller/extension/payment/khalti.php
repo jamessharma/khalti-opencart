@@ -15,7 +15,7 @@ class ControllerExtensionPaymentKhalti extends Controller {
 
 		$data['current'] = $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
-		if (($this->request->server['REQUEST_METHOD'] == 'POST') && ($this->validate())) {
+		if (($this->request->server['REQUEST_METHOD'] == 'POST')) {
 			$this->model_setting_setting->editSetting('payment_khalti', $this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
